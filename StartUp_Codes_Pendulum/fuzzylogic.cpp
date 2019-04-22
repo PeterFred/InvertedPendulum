@@ -8,8 +8,8 @@
 void initFuzzyRules(fuzzy_system_rec *fl)
 {
 
-   const int no_of_rules = 13, //PF Yamakawa has 13 rules in FAMM
-       int i;
+   const int no_of_rules = 13; //PF Yamakawa has 13 rules in FAMM
+   int i;
 
    //----------------------------------------------------------------------------
    //X vs. Y
@@ -90,22 +90,32 @@ void initFuzzyRules(fuzzy_system_rec *fl)
 
 void initMembershipFunctions(fuzzy_system_rec *fl)
 {
+   const int A = 2; //[PF] added - need to be refined
+   const int B = 2; //[PF] added - need to be refined
+   const int C = 2; //[PF] added - need to be refined
+   const int D = 2; //[PF] added - need to be refined
+
+   const int theta = 1;
+   const int thetaDot = 1;
+   const int x = 1;
+   const int xDot = 1;
+
+   float XMax = (A * theta) + (B * thetaDot); //[PF] added - need to incorporate below
+   float YMax = (C * x) + (D * xDot);         //[PF] added - need to incorporate below
 
    /* The X membership functions */
+   fl->inp_mem_fns[X][in_nm] = init_trapz(-2, -1, 0, 0, left_trapezoid);
+   fl->inp_mem_fns[X][in_ns] = init_trapz(-2, -1, -1, 0, regular_trapezoid);
+   fl->inp_mem_fns[X][in_zr] = init_trapz(-1, 0, 0, 1, regular_trapezoid);
+   fl->inp_mem_fns[X][in_ps] = init_trapz(0, 1, 1, 2, regular_trapezoid);
+   fl->inp_mem_fns[X][in_pm] = init_trapz(1, 2, 0, 0, right_trapezoid);
 
-   //Sample routines only, to give you an idea of what to do here
-   //~ fl->inp_mem_fns[in_x][in_neg] = init_trapz (-1.5,-0.5,0,0,left_trapezoid);
-   //~ fl->inp_mem_fns[in_x][in_ze] = init_trapz (-1.5,-0.5,0.5,1.5,regular_trapezoid);
-   //~ fl->inp_mem_fns[in_x][in_pos] = init_trapz (0.5,1.5,0,0,right_trapezoid);
-
-   /* The X dot membership functions */
-   //enter the appropriate membership function initialisations here
-
-   /* The theta membership functions */
-   //enter the appropriate membership function initialisations here
-
-   /* The theta dot membership functions */
-   //enter the appropriate membership function initialisations here
+   /* The Y membership functions */
+   fl->inp_mem_fns[Y][in_nm] = init_trapz(-2, -1, 0, 0, left_trapezoid);
+   fl->inp_mem_fns[Y][in_ns] = init_trapz(-2, -1, -1, 0, regular_trapezoid);
+   fl->inp_mem_fns[Y][in_zr] = init_trapz(-1, 0, 0, 1, regular_trapezoid);
+   fl->inp_mem_fns[Y][in_ps] = init_trapz(0, 1, 1, 2, regular_trapezoid);
+   fl->inp_mem_fns[Y][in_pm] = init_trapz(1, 2, 0, 0, right_trapezoid);
 
    return;
 }
@@ -115,13 +125,18 @@ void initFuzzySystem(fuzzy_system_rec *fl)
 
    //Note: The settings of these parameters will depend upon your fuzzy system design
    fl->no_of_inputs = 2; /* Inputs are handled 2 at a time only */
-   fl->no_of_rules = 50;
+   fl->no_of_rules = 13; //[PF] added - Yamakawa's 13 rules
    fl->no_of_inp_regions = 5;
-   fl->no_of_outputs = 9;
+   fl->no_of_outputs = 7; //[PF] added (NM / ZR / PM / NS / PS / PL / NL)
 
    //Sample only
-   // fl->output_values [out_nvl]=-95.0;
-   // fl->output_values [out_nl] = -85.0;
+   fl->output_values[out_nl] = -100.0; //[PF] added will need to be fine tuned
+   fl->output_values[out_nm] = -75.0;  //[PF] added will need to be fine tuned
+   fl->output_values[out_ns] = -50.0;  //[PF] added will need to be fine tuned
+   fl->output_values[out_zr] = 0.0;    //[PF] added will need to be fine tuned
+   fl->output_values[out_ps] = 50.0;   //[PF] added will need to be fine tuned
+   fl->output_values[out_pm] = 75.0;   //[PF] added will need to be fine tuned
+   fl->output_values[out_pl] = 105.0;  //[PF] added will need to be fine tuned
 
    fl->rules = (rule *)malloc((size_t)(fl->no_of_rules * sizeof(rule)));
    initFuzzyRules(fl);

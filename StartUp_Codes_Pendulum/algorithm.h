@@ -11,7 +11,6 @@
 #include <deque>
 #include <set>
 
-
 using namespace std;
 
 /////////////////////////////////////////////////////
@@ -19,6 +18,5 @@ using namespace std;
 //test function
 
 void testFunction();
-
 
 #endif

@@ -41,7 +41,7 @@ enum
    Y
 };
 
-//Fuzzy sets (NM / ZR / PM / NS / PS )
+//Fuzzy sets (5: NM / ZR / PM / NS / PS )
 enum
 {
    in_nm,
@@ -51,7 +51,7 @@ enum
    in_pm
 };
 
-//Fuzzy output terms (NM / ZR / PM / NS / PS / PL /NL)
+//Fuzzy output terms (7: NM / ZR / PM / NS / PS / PL /NL)
 enum
 {
    out_nm,
@@ -67,7 +67,6 @@ typedef struct
 {
    trapz_type tp;
    float a, b, c, d, l_slope, r_slope;
-
 } trapezoid;
 
 typedef struct
