@@ -4,7 +4,6 @@
 /////////////////////////////////////////////////////////////////
 
 //Initialise Fuzzy Rules
-
 void initFuzzyRules(fuzzy_system_rec *fl)
 {
 
@@ -30,57 +29,57 @@ void initFuzzyRules(fuzzy_system_rec *fl)
    fl->rules[1].inp_fuzzy_set[1] = in_pm;
    fl->rules[1].out_fuzzy_set = out_ps;
 
-   // Rule3: If X is Positive Medium and Y is Positive Medium then output is Positive Large
+   //Rule3: If X is Positive Medium and Y is Positive Medium then output is Positive Large
    fl->rules[2].inp_fuzzy_set[0] = in_pm;
    fl->rules[2].inp_fuzzy_set[1] = in_pm;
    fl->rules[2].out_fuzzy_set = out_pl;
 
-   // Rule4: If X is Negative Small and Y is Positive Small then output is Negative Small
+   //Rule4: If X is Negative Small and Y is Positive Small then output is Negative Small
    fl->rules[3].inp_fuzzy_set[0] = in_ns;
    fl->rules[3].inp_fuzzy_set[1] = in_ps;
    fl->rules[3].out_fuzzy_set = out_ns;
 
-   // Rule5: If X is Positive Small and Y is Positive Small then output is Positive Medium
+   //Rule5: If X is Positive Small and Y is Positive Small then output is Positive Medium
    fl->rules[4].inp_fuzzy_set[0] = in_ps;
    fl->rules[4].inp_fuzzy_set[1] = in_ps;
    fl->rules[4].out_fuzzy_set = out_pm;
 
-   // Rule6: If X is Negative Medium and Y is Zero then output is Negative Medium
+   //Rule6: If X is Negative Medium and Y is Zero then output is Negative Medium
    fl->rules[5].inp_fuzzy_set[0] = in_nm;
    fl->rules[5].inp_fuzzy_set[1] = in_zr;
    fl->rules[5].out_fuzzy_set = out_nm;
 
-   // Rule7: If X is Zero and Y is Zero then	output is Zero
+   //Rule7: If X is Zero and Y is Zero then	output is Zero
    fl->rules[6].inp_fuzzy_set[0] = in_zr;
    fl->rules[6].inp_fuzzy_set[1] = in_zr;
    fl->rules[6].out_fuzzy_set = out_zr;
 
-   // Rule8: If X is Positive Medium and Y is Zero then output is Positive Medium
+   //Rule8: If X is Positive Medium and Y is Zero then output is Positive Medium
    fl->rules[7].inp_fuzzy_set[0] = in_pm;
    fl->rules[7].inp_fuzzy_set[1] = in_zr;
    fl->rules[7].out_fuzzy_set = out_pm;
 
-   // Rule9: If X is Negative Small and Y is Negative Small then output is Negative Medium
+   //Rule9: If X is Negative Small and Y is Negative Small then output is Negative Medium
    fl->rules[8].inp_fuzzy_set[0] = in_ns;
    fl->rules[8].inp_fuzzy_set[1] = in_ns;
    fl->rules[8].out_fuzzy_set = out_nm;
 
-   // Rule10: If X is Positive Small and Y is Negative Small then output is Positive Small
+   //Rule10: If X is Positive Small and Y is Negative Small then output is Positive Small
    fl->rules[9].inp_fuzzy_set[0] = in_ps;
    fl->rules[9].inp_fuzzy_set[1] = in_ns;
    fl->rules[9].out_fuzzy_set = out_ps;
 
-   // Rule11: If X is Negative Medium and Y is Negative Medium then output is Negative Large
+   //Rule11: If X is Negative Medium and Y is Negative Medium then output is Negative Large
    fl->rules[10].inp_fuzzy_set[0] = in_nm;
    fl->rules[10].inp_fuzzy_set[1] = in_nm;
    fl->rules[10].out_fuzzy_set = out_nl;
 
-   // Rule12: If X is Zero and Y is Negative Medium then	output is Negative Small
+   //Rule12: If X is Zero and Y is Negative Medium then	output is Negative Small
    fl->rules[11].inp_fuzzy_set[0] = in_zr;
    fl->rules[11].inp_fuzzy_set[1] = in_nm;
    fl->rules[11].out_fuzzy_set = out_ns;
 
-   // Rule13: If X is Positive Medium and Y is Negative Medium then 	output is Positive Small
+   //Rule13: If X is Positive Medium and Y is Negative Medium then 	output is Positive Small
    fl->rules[12].inp_fuzzy_set[0] = in_pm;
    fl->rules[12].inp_fuzzy_set[1] = in_nm;
    fl->rules[12].out_fuzzy_set = out_ps;
@@ -90,53 +89,56 @@ void initFuzzyRules(fuzzy_system_rec *fl)
 
 void initMembershipFunctions(fuzzy_system_rec *fl)
 {
-   const int A = 7; //[PF] added - need to be refined
-   const int B = 1; //[PF] added - need to be refined
-   const int C = 3; //[PF] added - need to be refined
-   const int D = 1; //[PF] added - need to be refined
 
-   const int theta = 1;
-   const int thetaDot = 1;
-   const int x = 1;
-   const int xDot = 1;
+   /* The membership functions */
 
-   float X_angle = (A * theta) + (B * thetaDot); //[PF] added - need to incorporate below //Measure of meregency in the angle
-   float Y_pos = (C * x) + (D * xDot);           //[PF] added - need to incorporate below //Measure of meregency in the position
+   //Measure of emeregency in the angle
+   float X_angle = (A * theta) + (B * thetaDot); //[PF] added - need to incorporate below
+   //Measure of meregency in the position
+   //float Y_pos = (C * x_) + (D * xDot); //[PF] added - need to incorporate below
 
-   /* The X membership functions */
-   fl->inp_mem_fns[X][in_nm] = init_trapz(-2, -1, 0, 0, left_trapezoid);
-   fl->inp_mem_fns[X][in_ns] = init_trapz(-2, -1, -1, 0, regular_trapezoid);
-   fl->inp_mem_fns[X][in_zr] = init_trapz(-1, 0, 0, 1, regular_trapezoid);
-   fl->inp_mem_fns[X][in_ps] = init_trapz(0, 1, 1, 2, regular_trapezoid);
-   fl->inp_mem_fns[X][in_pm] = init_trapz(1, 2, 0, 0, right_trapezoid);
+   // The values for a,b,c and d are all calculated by using the value of X_angle or max_Y
+   //The X membership function initialisations
+   fl->inp_mem_fns[X][in_nm] = init_trapz(-X_angle, -(X_angle) / 2, 0, 0, left_trapezoid);
+   fl->inp_mem_fns[X][in_ns] = init_trapz(-X_angle, -X_angle / 2, -X_angle / 2, 0, regular_trapezoid);
+   fl->inp_mem_fns[X][in_zr] = init_trapz(-X_angle / 2, 0, 0, X_angle / 2, regular_trapezoid);
+   fl->inp_mem_fns[X][in_ps] = init_trapz(0, X_angle / 2, X_angle / 2, (2 * X_angle), regular_trapezoid);
+   fl->inp_mem_fns[X][in_pm] = init_trapz((X_angle) / 2, (2 * X_angle), 0, 0, right_trapezoid);
+
+   //The Y membership function initialisations
+   fl->inp_mem_fns[Y][in_nm] = init_trapz(-X_angle, -(X_angle) / 2, 0, 0, left_trapezoid);
+   fl->inp_mem_fns[Y][in_ns] = init_trapz(-X_angle, -X_angle / 2, -X_angle / 2, 0, regular_trapezoid);
+   fl->inp_mem_fns[Y][in_zr] = init_trapz(-X_angle / 2, 0, 0, X_angle / 2, regular_trapezoid);
+   fl->inp_mem_fns[Y][in_ps] = init_trapz(0, X_angle / 2, X_angle / 2, (2 * X_angle), regular_trapezoid);
+   fl->inp_mem_fns[Y][in_pm] = init_trapz((X_angle) / 2, (2 * X_angle), 0, 0, right_trapezoid);
 
    /* The Y membership functions */
-   fl->inp_mem_fns[Y][in_nm] = init_trapz(-2, -1, 0, 0, left_trapezoid);
-   fl->inp_mem_fns[Y][in_ns] = init_trapz(-2, -1, -1, 0, regular_trapezoid);
-   fl->inp_mem_fns[Y][in_zr] = init_trapz(-1, 0, 0, 1, regular_trapezoid);
-   fl->inp_mem_fns[Y][in_ps] = init_trapz(0, 1, 1, 2, regular_trapezoid);
-   fl->inp_mem_fns[Y][in_pm] = init_trapz(1, 2, 0, 0, right_trapezoid);
+   // fl->inp_mem_fns[Y][in_nm] = init_trapz(-Y_pos, -Y_pos / 2, 0, 0, left_trapezoid);
+   // fl->inp_mem_fns[Y][in_ns] = init_trapz(-Y_pos, -Y_pos / 2, -Y_pos / 2, 0, regular_trapezoid);
+   // fl->inp_mem_fns[Y][in_zr] = init_trapz(-Y_pos / 2, 0, 0, Y_pos / 2, regular_trapezoid);
+   // fl->inp_mem_fns[Y][in_ps] = init_trapz(0, Y_pos / 2, Y_pos / 2, 2 * Y_pos, regular_trapezoid);
+   // fl->inp_mem_fns[Y][in_pm] = init_trapz(Y_pos / 2, 2 * Y_pos, 0, 0, right_trapezoid);
 
    return;
 }
-
 void initFuzzySystem(fuzzy_system_rec *fl)
 {
 
    //Note: The settings of these parameters will depend upon your fuzzy system design
-   fl->no_of_inputs = 2; /* Inputs are handled 2 at a time only */
-   fl->no_of_rules = 13; //[PF] added - Yamakawa's 13 rules
-   fl->no_of_inp_regions = 5;
-   fl->no_of_outputs = 7; //[PF] added (NM / ZR / PM / NS / PS / PL / NL)
+   fl->no_of_inputs = 2;      /* Inputs are handled 2 at a time only */
+   fl->no_of_rules = 13;      //13 Fuzzy rules for Yamakawa's approach
+   fl->no_of_inp_regions = 5; //5 input regions
+   fl->no_of_outputs = 7;     //7 output regions
 
-   //Sample only
-   fl->output_values[out_nl] = -100.0; //[PF] added will need to be fine tuned
-   fl->output_values[out_nm] = -75.0;  //[PF] added will need to be fine tuned
-   fl->output_values[out_ns] = -50.0;  //[PF] added will need to be fine tuned
-   fl->output_values[out_zr] = 0.0;    //[PF] added will need to be fine tuned
-   fl->output_values[out_ps] = 50.0;   //[PF] added will need to be fine tuned
-   fl->output_values[out_pm] = 75.0;   //[PF] added will need to be fine tuned
-   fl->output_values[out_pl] = 105.0;  //[PF] added will need to be fine tuned
+   //Output values
+
+   fl->output_values[out_nl] = -force;
+   fl->output_values[out_nm] = -(force / 2);
+   fl->output_values[out_ns] = -(force / 3);
+   fl->output_values[out_zr] = 0.0;
+   fl->output_values[out_ps] = (force / 3);
+   fl->output_values[out_pm] = (force / 2);
+   fl->output_values[out_pl] = force;
 
    fl->rules = (rule *)malloc((size_t)(fl->no_of_rules * sizeof(rule)));
    initFuzzyRules(fl);
@@ -238,13 +240,8 @@ float fuzzy_system(float inputs[], fuzzy_system_rec fz)
    float sum1 = 0.0, sum2 = 0.0, weight;
    float m_values[MAX_NO_OF_INPUTS];
 
-   const int A = 7; //[PF] added - need to be refined
-   const int B = 1; //[PF] added - need to be refined
-   const int C = 3; //[PF] added - need to be refined
-   const int D = 1; //[PF] added - need to be refined
-
-   inputs[X] = (A * inputs[in_theta]) + (B * inputs[in_theta_dot]); //[PF]
-   inputs[Y] = (C * inputs[in_x]) + (D * inputs[in_x_dot]);         //[PF]
+   inputs[X] = (A * inputs[0]) + (B * inputs[1]);
+   inputs[Y] = (C * inputs[2]) + (D * inputs[3]);
 
    for (i = 0; i < fz.no_of_rules; i++)
    {
@@ -256,9 +253,7 @@ float fuzzy_system(float inputs[], fuzzy_system_rec fz)
                              fz.inp_mem_fns[variable_index][fuzzy_set]);
       } /* end j  */
 
-      //weight = min_of(m_values, fz.no_of_inputs);
       weight = min_of(m_values, fz.no_of_inputs);
-
       sum1 += weight * fz.output_values[fz.rules[i].out_fuzzy_set];
       sum2 += weight;
    } /* end i  */
@@ -266,11 +261,8 @@ float fuzzy_system(float inputs[], fuzzy_system_rec fz)
    if (fabs(sum2) < TOO_SMALL)
    {
       cout << "\r\nFLPRCS Error: Sum2 in fuzzy_system is 0.  Press key: " << endl;
-      //~ getch();
-      //~ exit(1);
       return 0.0;
    }
-
    return (sum1 / sum2);
 } /* end fuzzy_system  */
 

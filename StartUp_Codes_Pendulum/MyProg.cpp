@@ -64,6 +64,7 @@ struct WorldStateType
 		angle_dot = 0.0;
 		angle_double_dot = 0.0;
 		F = 0.0;
+		startTime = clock();
 	}
 
 	float x;
@@ -72,6 +73,7 @@ struct WorldStateType
 	float angle;
 	float angle_dot;
 	float angle_double_dot;
+	clock_t startTime;
 
 	float const mb = 0.1;
 	float const g = 9.8;
@@ -207,6 +209,7 @@ float calc_horizontal_acceleration(const WorldStateType &s)
 
 void displayInfo(const WorldStateType &s)
 {
+
 	setcolor(WHITE);
 	outtextxy((deviceBoundary.x1 + deviceBoundary.x2) / 2, deviceBoundary.y1 - 2 * textheight("H"), "INVERTED PENDULUM");
 	settextstyle(TRIPLEX_FONT, HORIZ_DIR, 1);
@@ -231,6 +234,9 @@ void displayInfo(const WorldStateType &s)
 
 	sprintf(angleStr, "F = %4.2f", s.F);
 	outtextxy((deviceBoundary.x2 - textwidth("n.h.reyes@massey.ac.nz")), deviceBoundary.y2 - (5 * textheight("H")), angleStr);
+
+	sprintf(angleStr, "Time = %4.2f", ((float)(clock() - s.startTime) / CLOCKS_PER_SEC));
+	outtextxy((deviceBoundary.x2 - textwidth("n.h.reyes@massey.ac.nz")), deviceBoundary.y2 - (4 * textheight("H")), angleStr);
 }
 
 void runInvertedPendulum()
@@ -267,7 +273,17 @@ void runInvertedPendulum()
 	//***************************************************************
 	//Set the initial angle of the pole with respect to the vertical
 	prevState.x = -1.0;
-	prevState.angle = 35.0 * (3.14 / 180); //initial angle  = 35 degrees
+
+	//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	//ADJUST THIS TO MAXIMUM PENDULUM CAN HANDLE
+	//prevState.angle = 35.0 * (3.14 / 180); //initial angle  = 35 degrees
+	prevState.angle = 60.0 * (3.14 / 180);
+	//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 	initFuzzySystem(&g_fuzzy_system);
 

@@ -22,6 +22,19 @@ using namespace std;
 
 #define TOO_SMALL 1e-6
 
+//Constants for Yamakawas formulas
+#define A 4
+#define B 1
+#define C 1
+#define D 1
+#define theta 0.2
+#define thetaDot 0.4
+#define x_ 0.8
+#define xDot 0.3
+
+//Force applied constant
+#define force 300
+
 //Trapezoidal membership function types
 typedef enum
 {
@@ -45,22 +58,22 @@ enum
 enum
 {
    in_nm,
-   in_zr,
-   in_pm,
    in_ns,
-   in_ps
+   in_zr,
+   in_ps,
+   in_pm
 };
 
 //Fuzzy output terms //[PF] (7: NM / ZR / PM / NS / PS / PL /NL)
 enum
 {
-   out_ns,
-   out_ps,
-   out_pl,
-   out_pm,
+   out_nl,
    out_nm,
+   out_ns,
    out_zr,
-   out_nl
+   out_ps,
+   out_pm,
+   out_pl
 };
 
 typedef struct
