@@ -289,7 +289,7 @@ void runInvertedPendulum()
 
 		//1) Enable this only after your fuzzy system has been completed already.
 		//Remember, you need to define the rules, membership function parameters and rule outputs.
-		//prevState.F = fuzzy_system(inputs, g_fuzzy_system); //call the fuzzy controller
+		prevState.F = fuzzy_system(inputs, g_fuzzy_system); //call the fuzzy controller
 
 		externalForce = 0.0;
 		externalForce = getKey(); //manual operation
@@ -356,7 +356,7 @@ void runInvertedPendulum()
 	}
 
 	//2) Enable this only after your fuzzy system has been completed already.
-	//free_fuzzy_rules(&g_fuzzy_system);
+	free_fuzzy_rules(&g_fuzzy_system);
 }
 
 void generateControlSurface_Angle_vs_Angle_Dot()
@@ -566,10 +566,9 @@ int main(void)
 		runInvertedPendulum();
 
 		//3) Enable this only after your fuzzy system has been completed already.
-		//generateControlSurface_Angle_vs_Angle_Dot();
-
+		generateControlSurface_Angle_vs_Angle_Dot();
 		//4) Enable this only after your fuzzy system has been completed already.
-		//saveDataToFile("data_angle_vs_angle_dot.txt");
+		saveDataToFile("data_angle_vs_angle_dot.txt");
 	}
 	catch (...)
 	{

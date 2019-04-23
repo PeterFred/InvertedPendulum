@@ -41,25 +41,25 @@ enum
    Y
 };
 
-//Fuzzy sets (5: NM / ZR / PM / NS / PS )
+//Fuzzy sets //[PF] (5: NM / ZR / PM / NS / PS )
 enum
 {
    in_nm,
-   in_ns,
    in_zr,
-   in_ps,
-   in_pm
+   in_pm,
+   in_ns,
+   in_ps
 };
 
-//Fuzzy output terms (7: NM / ZR / PM / NS / PS / PL /NL)
+//Fuzzy output terms //[PF] (7: NM / ZR / PM / NS / PS / PL /NL)
 enum
 {
-   out_nm,
-   out_zr,
-   out_pm,
    out_ns,
    out_ps,
    out_pl,
+   out_pm,
+   out_nm,
+   out_zr,
    out_nl
 };
 

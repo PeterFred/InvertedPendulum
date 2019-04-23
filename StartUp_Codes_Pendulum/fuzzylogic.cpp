@@ -21,67 +21,67 @@ void initFuzzyRules(fuzzy_system_rec *fl)
    }
 
    // Rule1: If X is Negative Medium and Y is Positive Medium then output is Negative Small
-   fl->rules[0].inp_index[0] = in_nm;
+   fl->rules[0].inp_fuzzy_set[0] = in_nm;
    fl->rules[0].inp_fuzzy_set[1] = in_pm;
    fl->rules[0].out_fuzzy_set = out_ns;
 
    // Rule2: If X is Zero and Y is Positive Medium then output is Positive Small
-   fl->rules[1].inp_index[0] = in_zr;
+   fl->rules[1].inp_fuzzy_set[0] = in_zr;
    fl->rules[1].inp_fuzzy_set[1] = in_pm;
    fl->rules[1].out_fuzzy_set = out_ps;
 
    // Rule3: If X is Positive Medium and Y is Positive Medium then output is Positive Large
-   fl->rules[2].inp_index[0] = in_pm;
+   fl->rules[2].inp_fuzzy_set[0] = in_pm;
    fl->rules[2].inp_fuzzy_set[1] = in_pm;
    fl->rules[2].out_fuzzy_set = out_pl;
 
    // Rule4: If X is Negative Small and Y is Positive Small then output is Negative Small
-   fl->rules[3].inp_index[0] = in_ns;
+   fl->rules[3].inp_fuzzy_set[0] = in_ns;
    fl->rules[3].inp_fuzzy_set[1] = in_ps;
    fl->rules[3].out_fuzzy_set = out_ns;
 
    // Rule5: If X is Positive Small and Y is Positive Small then output is Positive Medium
-   fl->rules[4].inp_index[0] = in_ps;
+   fl->rules[4].inp_fuzzy_set[0] = in_ps;
    fl->rules[4].inp_fuzzy_set[1] = in_ps;
    fl->rules[4].out_fuzzy_set = out_pm;
 
    // Rule6: If X is Negative Medium and Y is Zero then output is Negative Medium
-   fl->rules[5].inp_index[0] = in_nm;
+   fl->rules[5].inp_fuzzy_set[0] = in_nm;
    fl->rules[5].inp_fuzzy_set[1] = in_zr;
    fl->rules[5].out_fuzzy_set = out_nm;
 
    // Rule7: If X is Zero and Y is Zero then	output is Zero
-   fl->rules[6].inp_index[0] = in_zr;
+   fl->rules[6].inp_fuzzy_set[0] = in_zr;
    fl->rules[6].inp_fuzzy_set[1] = in_zr;
    fl->rules[6].out_fuzzy_set = out_zr;
 
    // Rule8: If X is Positive Medium and Y is Zero then output is Positive Medium
-   fl->rules[7].inp_index[0] = in_pm;
+   fl->rules[7].inp_fuzzy_set[0] = in_pm;
    fl->rules[7].inp_fuzzy_set[1] = in_zr;
    fl->rules[7].out_fuzzy_set = out_pm;
 
    // Rule9: If X is Negative Small and Y is Negative Small then output is Negative Medium
-   fl->rules[8].inp_index[0] = in_ns;
+   fl->rules[8].inp_fuzzy_set[0] = in_ns;
    fl->rules[8].inp_fuzzy_set[1] = in_ns;
    fl->rules[8].out_fuzzy_set = out_nm;
 
    // Rule10: If X is Positive Small and Y is Negative Small then output is Positive Small
-   fl->rules[9].inp_index[0] = in_ps;
+   fl->rules[9].inp_fuzzy_set[0] = in_ps;
    fl->rules[9].inp_fuzzy_set[1] = in_ns;
    fl->rules[9].out_fuzzy_set = out_ps;
 
    // Rule11: If X is Negative Medium and Y is Negative Medium then output is Negative Large
-   fl->rules[10].inp_index[0] = in_nm;
+   fl->rules[10].inp_fuzzy_set[0] = in_nm;
    fl->rules[10].inp_fuzzy_set[1] = in_nm;
    fl->rules[10].out_fuzzy_set = out_nl;
 
    // Rule12: If X is Zero and Y is Negative Medium then	output is Negative Small
-   fl->rules[11].inp_index[0] = in_zr;
+   fl->rules[11].inp_fuzzy_set[0] = in_zr;
    fl->rules[11].inp_fuzzy_set[1] = in_nm;
    fl->rules[11].out_fuzzy_set = out_ns;
 
    // Rule13: If X is Positive Medium and Y is Negative Medium then 	output is Positive Small
-   fl->rules[12].inp_index[0] = in_pm;
+   fl->rules[12].inp_fuzzy_set[0] = in_pm;
    fl->rules[12].inp_fuzzy_set[1] = in_nm;
    fl->rules[12].out_fuzzy_set = out_ps;
 
@@ -90,18 +90,18 @@ void initFuzzyRules(fuzzy_system_rec *fl)
 
 void initMembershipFunctions(fuzzy_system_rec *fl)
 {
-   const int A = 2; //[PF] added - need to be refined
-   const int B = 2; //[PF] added - need to be refined
-   const int C = 2; //[PF] added - need to be refined
-   const int D = 2; //[PF] added - need to be refined
+   const int A = 7; //[PF] added - need to be refined
+   const int B = 1; //[PF] added - need to be refined
+   const int C = 3; //[PF] added - need to be refined
+   const int D = 1; //[PF] added - need to be refined
 
    const int theta = 1;
    const int thetaDot = 1;
    const int x = 1;
    const int xDot = 1;
 
-   float XMax = (A * theta) + (B * thetaDot); //[PF] added - need to incorporate below
-   float YMax = (C * x) + (D * xDot);         //[PF] added - need to incorporate below
+   float X_angle = (A * theta) + (B * thetaDot); //[PF] added - need to incorporate below //Measure of meregency in the angle
+   float Y_pos = (C * x) + (D * xDot);           //[PF] added - need to incorporate below //Measure of meregency in the position
 
    /* The X membership functions */
    fl->inp_mem_fns[X][in_nm] = init_trapz(-2, -1, 0, 0, left_trapezoid);
@@ -238,6 +238,14 @@ float fuzzy_system(float inputs[], fuzzy_system_rec fz)
    float sum1 = 0.0, sum2 = 0.0, weight;
    float m_values[MAX_NO_OF_INPUTS];
 
+   const int A = 7; //[PF] added - need to be refined
+   const int B = 1; //[PF] added - need to be refined
+   const int C = 3; //[PF] added - need to be refined
+   const int D = 1; //[PF] added - need to be refined
+
+   inputs[X] = (A * inputs[in_theta]) + (B * inputs[in_theta_dot]); //[PF]
+   inputs[Y] = (C * inputs[in_x]) + (D * inputs[in_x_dot]);         //[PF]
+
    for (i = 0; i < fz.no_of_rules; i++)
    {
       for (j = 0; j < fz.no_of_inputs; j++)
@@ -248,6 +256,7 @@ float fuzzy_system(float inputs[], fuzzy_system_rec fz)
                              fz.inp_mem_fns[variable_index][fuzzy_set]);
       } /* end j  */
 
+      //weight = min_of(m_values, fz.no_of_inputs);
       weight = min_of(m_values, fz.no_of_inputs);
 
       sum1 += weight * fz.output_values[fz.rules[i].out_fuzzy_set];
