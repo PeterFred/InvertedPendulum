@@ -23,14 +23,14 @@ using namespace std;
 #define TOO_SMALL 1e-6
 
 //Constants for Yamakawas formulas
-#define A 4
+#define A 5
 #define B 1
-#define C 1
+#define C 2
 #define D 1
-#define theta 0.2
-#define thetaDot 0.4
-#define x_ 0.8
-#define xDot 0.3
+#define theta 0.5
+#define thetaDot 0.5
+#define x_ 1
+#define xDot 1
 
 //Force applied constant
 #define force 300
@@ -54,7 +54,7 @@ enum
    Y
 };
 
-//Fuzzy sets //[PF] (5: NM / ZR / PM / NS / PS )
+//Fuzzy sets //[PF] (5: NM / ZR / PM / NS / PS ) Angle AND Position
 enum
 {
    in_nm,
@@ -64,7 +64,7 @@ enum
    in_pm
 };
 
-//Fuzzy output terms //[PF] (7: NM / ZR / PM / NS / PS / PL /NL)
+//Fuzzy output terms //[PF] (7: NM / ZR / PM / NS / PS / PL /NL) Angle AND Speed
 enum
 {
    out_nl,
@@ -76,26 +76,33 @@ enum
    out_pl
 };
 
+//Trapeziod
 typedef struct
 {
-   trapz_type tp;
-   float a, b, c, d, l_slope, r_slope;
+   trapz_type tp;                      //Type of trapexiod
+   float a, b, c, d, l_slope, r_slope; //Parameters
 } trapezoid;
 
+//Fuzzy rule
 typedef struct
 {
-   short inp_index[MAX_NO_OF_INPUTS],
-       inp_fuzzy_set[MAX_NO_OF_INPUTS],
-       out_fuzzy_set;
+   short inp_index[MAX_NO_OF_INPUTS],   //Input index
+       inp_fuzzy_set[MAX_NO_OF_INPUTS], //Input fuzzy set index
+       out_fuzzy_set;                   //Output index
 } rule;
 
+//Complete fuzzy system
+//Zero - order Sugeno Fuzzy Inference system
 typedef struct
 {
    bool allocated;
    trapezoid inp_mem_fns[MAX_NO_OF_INPUTS][MAX_NO_OF_INP_REGIONS];
-   rule *rules;
-   int no_of_inputs, no_of_inp_regions, no_of_rules, no_of_outputs;
-   float output_values[MAX_NO_OF_OUTPUT_VALUES];
+   rule *rules;                                  //Allocate memory for the rules
+   int no_of_inputs,                             //Number of inputs
+       no_of_inp_regions,                        //Number of fuzzy sets associated with each input
+       no_of_rules,                              //Number of rules
+       no_of_outputs;                            //Number of fuzzy outputs
+   float output_values[MAX_NO_OF_OUTPUT_VALUES]; //Value of the outputs
 } fuzzy_system_rec;
 
 extern fuzzy_system_rec g_fuzzy_system;

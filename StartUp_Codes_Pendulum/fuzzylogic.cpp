@@ -12,13 +12,14 @@ void initFuzzyRules(fuzzy_system_rec *fl)
 
    //----------------------------------------------------------------------------
    //X vs. Y
-   //   Use X & Y for fuzzy rules
+   //Use X & Y for fuzzy rules
    for (i = 0; i < no_of_rules; i++)
    {
-      fl->rules[i].inp_index[0] = X;
-      fl->rules[i].inp_index[1] = Y;
+      fl->rules[i].inp_index[0] = X; //in_angle
+      fl->rules[i].inp_index[1] = Y; //in_distance
    }
 
+   // Rule[0]     Angle is ...            Distance is ....                  ...out_fuzzy_set
    // Rule1: If X is Negative Medium and Y is Positive Medium then output is Negative Small
    fl->rules[0].inp_fuzzy_set[0] = in_nm;
    fl->rules[0].inp_fuzzy_set[1] = in_pm;
@@ -92,27 +93,27 @@ void initMembershipFunctions(fuzzy_system_rec *fl)
 
    /* The membership functions */
 
-   //Measure of emeregency in the angle
+   //Measure of emeregency in the angle --Values are defined in fuzzylogic.h
    float X_angle = (A * theta) + (B * thetaDot); //[PF] added - need to incorporate below
-   //Measure of meregency in the position
-   //float Y_pos = (C * x_) + (D * xDot); //[PF] added - need to incorporate below
+   //Measure of emeregency in the position
+   //float Y_pos = (C * x_) + (D * xDot); //[PF] added - need to incorporate below??
 
-   // The values for a,b,c and d are all calculated by using the value of X_angle or max_Y
-   //The X membership function initialisations
+   // The values for a,b,c and d are derived from the excel worksheet
+   //The X membership functions */
    fl->inp_mem_fns[X][in_nm] = init_trapz(-X_angle, -(X_angle) / 2, 0, 0, left_trapezoid);
    fl->inp_mem_fns[X][in_ns] = init_trapz(-X_angle, -X_angle / 2, -X_angle / 2, 0, regular_trapezoid);
    fl->inp_mem_fns[X][in_zr] = init_trapz(-X_angle / 2, 0, 0, X_angle / 2, regular_trapezoid);
    fl->inp_mem_fns[X][in_ps] = init_trapz(0, X_angle / 2, X_angle / 2, (2 * X_angle), regular_trapezoid);
    fl->inp_mem_fns[X][in_pm] = init_trapz((X_angle) / 2, (2 * X_angle), 0, 0, right_trapezoid);
 
-   //The Y membership function initialisations
+   //The Y membership function using X_angle */
    fl->inp_mem_fns[Y][in_nm] = init_trapz(-X_angle, -(X_angle) / 2, 0, 0, left_trapezoid);
    fl->inp_mem_fns[Y][in_ns] = init_trapz(-X_angle, -X_angle / 2, -X_angle / 2, 0, regular_trapezoid);
    fl->inp_mem_fns[Y][in_zr] = init_trapz(-X_angle / 2, 0, 0, X_angle / 2, regular_trapezoid);
    fl->inp_mem_fns[Y][in_ps] = init_trapz(0, X_angle / 2, X_angle / 2, (2 * X_angle), regular_trapezoid);
    fl->inp_mem_fns[Y][in_pm] = init_trapz((X_angle) / 2, (2 * X_angle), 0, 0, right_trapezoid);
 
-   /* The Y membership functions */
+   /* The Y membership functions using Y_pos*/
    // fl->inp_mem_fns[Y][in_nm] = init_trapz(-Y_pos, -Y_pos / 2, 0, 0, left_trapezoid);
    // fl->inp_mem_fns[Y][in_ns] = init_trapz(-Y_pos, -Y_pos / 2, -Y_pos / 2, 0, regular_trapezoid);
    // fl->inp_mem_fns[Y][in_zr] = init_trapz(-Y_pos / 2, 0, 0, Y_pos / 2, regular_trapezoid);
@@ -126,12 +127,11 @@ void initFuzzySystem(fuzzy_system_rec *fl)
 
    //Note: The settings of these parameters will depend upon your fuzzy system design
    fl->no_of_inputs = 2;      /* Inputs are handled 2 at a time only */
-   fl->no_of_rules = 13;      //13 Fuzzy rules for Yamakawa's approach
-   fl->no_of_inp_regions = 5; //5 input regions
-   fl->no_of_outputs = 7;     //7 output regions
+   fl->no_of_rules = 13;      //13 Fuzzy rules
+   fl->no_of_inp_regions = 5; //5 input regions (5: NM / ZR / PM / NS / PS )
+   fl->no_of_outputs = 7;     //7 output regions (7: NM / ZR / PM / NS / PS / PL /NL)
 
-   //Output values
-
+   //Output values --Force (in Newtons) is defined in fuzzylogic.h
    fl->output_values[out_nl] = -force;
    fl->output_values[out_nm] = -(force / 2);
    fl->output_values[out_ns] = -(force / 3);
@@ -140,7 +140,7 @@ void initFuzzySystem(fuzzy_system_rec *fl)
    fl->output_values[out_pm] = (force / 2);
    fl->output_values[out_pl] = force;
 
-   fl->rules = (rule *)malloc((size_t)(fl->no_of_rules * sizeof(rule)));
+   fl->rules = (rule *)malloc((size_t)(fl->no_of_rules * sizeof(rule))); //Allocate memory for the rules
    initFuzzyRules(fl);
    initMembershipFunctions(fl);
    return;
@@ -240,8 +240,9 @@ float fuzzy_system(float inputs[], fuzzy_system_rec fz)
    float sum1 = 0.0, sum2 = 0.0, weight;
    float m_values[MAX_NO_OF_INPUTS];
 
-   inputs[X] = (A * inputs[0]) + (B * inputs[1]);
-   inputs[Y] = (C * inputs[2]) + (D * inputs[3]);
+   //As per Yamakawas formulas
+   inputs[X] = (A * inputs[in_theta]) + (B * inputs[in_theta_dot]); //Measure of emeregency in the angle --Values are defined in fuzzylogic.h
+   inputs[Y] = (C * inputs[in_x]) + (D * inputs[in_x_dot]);         //Measure of emeregency in the position --Values are defined in fuzzylogic.h
 
    for (i = 0; i < fz.no_of_rules; i++)
    {
@@ -256,6 +257,7 @@ float fuzzy_system(float inputs[], fuzzy_system_rec fz)
       weight = min_of(m_values, fz.no_of_inputs);
       sum1 += weight * fz.output_values[fz.rules[i].out_fuzzy_set];
       sum2 += weight;
+
    } /* end i  */
 
    if (fabs(sum2) < TOO_SMALL)
@@ -263,6 +265,8 @@ float fuzzy_system(float inputs[], fuzzy_system_rec fz)
       cout << "\r\nFLPRCS Error: Sum2 in fuzzy_system is 0.  Press key: " << endl;
       return 0.0;
    }
+
+   float returnValue = (sum1 / sum2);
    return (sum1 / sum2);
 } /* end fuzzy_system  */
 

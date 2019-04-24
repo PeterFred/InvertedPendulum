@@ -51,6 +51,7 @@ int fieldX1, fieldY1, fieldX2, fieldY2; //playing field boundaries
 BoundaryType worldBoundary, deviceBoundary;
 char keyPressed[5];
 fuzzy_system_rec g_fuzzy_system;
+float timeCheck = 0;
 
 struct WorldStateType
 {
@@ -218,6 +219,7 @@ void displayInfo(const WorldStateType &s)
 
 	char angleStr[120];
 	char xStr[120];
+	float timer = ((float)(clock() - s.startTime) / CLOCKS_PER_SEC);
 
 	float a = ((s.angle * 180 / 3.14));
 
@@ -235,8 +237,20 @@ void displayInfo(const WorldStateType &s)
 	sprintf(angleStr, "F = %4.2f", s.F);
 	outtextxy((deviceBoundary.x2 - textwidth("n.h.reyes@massey.ac.nz")), deviceBoundary.y2 - (5 * textheight("H")), angleStr);
 
-	sprintf(angleStr, "Time = %4.2f", ((float)(clock() - s.startTime) / CLOCKS_PER_SEC));
+	sprintf(angleStr, "Timer = %4.1f", timer);
 	outtextxy((deviceBoundary.x2 - textwidth("n.h.reyes@massey.ac.nz")), deviceBoundary.y2 - (4 * textheight("H")), angleStr);
+
+	if (s.x > 0.00 && s.x <= 0.001 && timer - timeCheck > 1)
+	{
+		if (a > 0.00 && a <= 0.001)
+		{
+			if (s.F > 0.00 && s.F <= 0.001)
+			{
+				cout << "Stable Time >> " << timer << endl;
+				timeCheck = timer;
+			}
+		}
+	}
 }
 
 void runInvertedPendulum()
